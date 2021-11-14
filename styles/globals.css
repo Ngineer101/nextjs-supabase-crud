@@ -11,6 +11,23 @@ a {
   text-decoration: none;
 }
 
+a,
+button {
+  background-color: lightgray;
+  border: 1px black solid;
+  padding: 10px;
+  margin: 0px 10px;
+}
+
+label {
+  display: block;
+  margin: 10px;
+}
+
+input {
+  margin: 0px 10px;
+}
+
 * {
   box-sizing: border-box;
 }
