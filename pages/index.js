@@ -5,14 +5,20 @@ export default function Home({ bikes }) {
   return (
     <>
       <h1>Bikes</h1>
-      {
-        (bikes || []).map(bike =>
-          <a key={bike.id} href={`/bikes/${bike.id}`}>{bike.make} - {bike.model}</a>)
-      }
-
-      <Link href='/bikes/new'>
-        <a>+ New bike</a>
-      </Link>
+      <ul>
+        {
+          (bikes || []).map(bike =>
+            <li key={bike.id}>
+              <a href={`/bikes/${bike.id}`}>{bike.make} - {bike.model}</a>
+            </li>
+          )
+        }
+        <li>
+          <Link href='/bikes/new'>
+            <a>+ New bike</a>
+          </Link>
+        </li>
+      </ul>
     </>
   )
 }
