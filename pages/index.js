@@ -13,13 +13,13 @@ export default function Home({ bikes }) {
         {
           (bikes || []).map(bike =>
             <li key={bike.id}>
-              <a href={`/bikes/${bike.id}`}>{bike.make} - {bike.model}</a>
+              <a className='button' href={`/bikes/${bike.id}`}>{bike.make} - {bike.model}</a>
             </li>
           )
         }
         <li>
           <Link href='/bikes/new'>
-            <a>+ New bike</a>
+            <a className='button'>+ New bike</a>
           </Link>
         </li>
       </ul>

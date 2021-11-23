@@ -15,7 +15,7 @@ export default function ViewBike({ bike }) {
 
       <div>
         <Link href={`/bikes/${bike.id}/edit`}>
-          <a>Edit bike</a>
+          <a className='button'>Edit bike</a>
         </Link>
         <button onClick={async (evt) => {
           await supabase
