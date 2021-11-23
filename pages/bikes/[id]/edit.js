@@ -40,6 +40,17 @@ export default function EditBike({ bike }) {
 }
 
 export const getServerSideProps = async (context) => {
+  // get the user using the "sb:token" cookie
+  const { user } = await supabase.auth.api.getUserByCookie(context.req)
+  if (!user) {
+    return {
+      redirect: {
+        destination: '/signin',
+        permanent: false,
+      }
+    }
+  }
+
   const { data: bike, error } = await supabase
     .from('bikes')
     .select('*')

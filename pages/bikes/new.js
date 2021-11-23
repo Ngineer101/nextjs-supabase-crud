@@ -35,3 +35,20 @@ export default function NewBike() {
     </>
   )
 }
+
+export const getServerSideProps = async (context) => {
+  // get the user using the "sb:token" cookie
+  const { user } = await supabase.auth.api.getUserByCookie(context.req)
+  if (!user) {
+    return {
+      redirect: {
+        destination: '/signin',
+        permanent: false,
+      }
+    }
+  }
+
+  return {
+    props: {}
+  }
+}
