@@ -54,6 +54,7 @@ export const getServerSideProps = async (context) => {
   }
 
   // Query all bikes
+  supabase.auth.setAuth(context.req.cookies['sb:token'])
   const { data: bikes, error } = await supabase.from('bikes').select();
 
   if (error) {

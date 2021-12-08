@@ -8,6 +8,7 @@ export default function NewBike() {
   const [bikeModel, setBikeModel] = useState('')
   const [bikeYear, setBikeYear] = useState('')
   const router = useRouter();
+  const session = supabase.auth.session();
 
   return (
     <>
@@ -27,6 +28,7 @@ export default function NewBike() {
               make: bikeMake,
               model: bikeModel,
               production_year: bikeYear,
+              user_id: session.user.id,
             });
 
           router.push('/')
