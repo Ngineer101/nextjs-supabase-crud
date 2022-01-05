@@ -1,9 +1,42 @@
 import { useRouter } from 'next/dist/client/router'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { supabase } from '../../../supabase-client'
 
 export default function ViewBike({ bike }) {
   const router = useRouter()
+  const [signedUrl, setSignedUrl] = useState('')
+  useEffect(() => {
+    if (bike.file_path) {
+
+      // Signed URL
+      supabase
+        .storage
+        .from('bike_images') // bucket name
+        .createSignedUrl(
+          bike.file_path, // path to the image in the bucket
+          36000, // time that the URL is valid in seconds
+        )
+        .then(data => {
+          if (data.error) {
+            // TODO: Handle error
+          }
+
+          setSignedUrl(data.signedURL)
+        })
+    }
+  }, [bike])
+
+  // Public URL
+  const bikeImageUrl = bike.file_path ?
+    supabase
+      .storage
+      .from('bike_images') // bucket name
+      .getPublicUrl(bike.file_path) // path to the image in the bucket
+      .publicURL
+    :
+    ''
+
   return (
     <>
       <h1>Bike details</h1>
@@ -12,6 +45,13 @@ export default function ViewBike({ bike }) {
       <label>Model: {bike.model}</label>
 
       <label>Production year: {bike.production_year}</label>
+
+      {
+        signedUrl &&
+        <div>
+          <img src={signedUrl} />
+        </div>
+      }
 
       <div>
         <Link href={`/bikes/${bike.id}/edit`}>
@@ -42,6 +82,7 @@ export const getServerSideProps = async (context) => {
     }
   }
 
+  supabase.auth.setAuth(context.req.cookies["sb:token"])
   const { data: bike, error } = await supabase
     .from('bikes')
     .select('*')

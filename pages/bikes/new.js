@@ -7,6 +7,7 @@ export default function NewBike() {
   const [bikeMake, setBikeMake] = useState('')
   const [bikeModel, setBikeModel] = useState('')
   const [bikeYear, setBikeYear] = useState('')
+  const [bikeImagePath, setBikeImagePath] = useState('')
   const router = useRouter();
   const session = supabase.auth.session();
 
@@ -20,6 +21,22 @@ export default function NewBike() {
         onModelChange={(evt) => setBikeModel(evt.target.value)}
         bikeYear={bikeYear}
         onYearChange={(evt) => setBikeYear(evt.target.value)}
+        onBikeImageChange={(evt) => {
+          const imageFile = evt.target.files[0]
+          const imagePath = `public/${imageFile.name}`
+          supabase.storage
+            .from('bike_images') // bucket name
+            .upload(
+              imagePath,
+              imageFile,
+              { upsert: true })
+            .then(response => {
+              setBikeImagePath(imagePath)
+            })
+            .catch(error => {
+              // TODO: show error message popup
+            })
+        }}
         onSubmit={async (evt) => {
           evt.preventDefault();
           await supabase
@@ -28,6 +45,7 @@ export default function NewBike() {
               make: bikeMake,
               model: bikeModel,
               production_year: bikeYear,
+              file_path: bikeImagePath,
               user_id: session.user.id,
             });
 

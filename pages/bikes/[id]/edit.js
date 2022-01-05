@@ -7,6 +7,7 @@ export default function EditBike({ bike }) {
   const [bikeMake, setBikeMake] = useState(bike.make)
   const [bikeModel, setBikeModel] = useState(bike.model)
   const [bikeYear, setBikeYear] = useState(bike.production_year)
+  const [bikeImagePath, setBikeImagePath] = useState(bike.file_path)
   const router = useRouter();
 
   return (
@@ -19,6 +20,22 @@ export default function EditBike({ bike }) {
         onModelChange={(evt) => setBikeModel(evt.target.value)}
         bikeYear={bikeYear}
         onYearChange={(evt) => setBikeYear(evt.target.value)}
+        onBikeImageChange={(evt) => {
+          const imageFile = evt.target.files[0]
+          const imagePath = `public/${imageFile.name}`
+          supabase.storage
+            .from('bike_images')
+            .upload(
+              imagePath,
+              imageFile,
+              { upsert: true })
+            .then(response => {
+              setBikeImagePath(imagePath)
+            })
+            .catch(error => {
+              // TODO: show error message popup
+            })
+        }}
         onSubmit={async (evt) => {
           evt.preventDefault();
           await supabase
@@ -27,6 +44,7 @@ export default function EditBike({ bike }) {
               make: bikeMake,
               model: bikeModel,
               production_year: bikeYear,
+              file_path: bikeImagePath,
             })
             .match({
               id: bike.id,
@@ -51,6 +69,7 @@ export const getServerSideProps = async (context) => {
     }
   }
 
+  supabase.auth.setAuth(context.req.cookies["sb:token"])
   const { data: bike, error } = await supabase
     .from('bikes')
     .select('*')

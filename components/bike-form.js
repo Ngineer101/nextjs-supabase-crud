@@ -5,6 +5,7 @@ export default function BikeForm({
   onModelChange,
   bikeYear,
   onYearChange,
+  onBikeImageChange,
   onSubmit
 }) {
   return (
@@ -33,6 +34,14 @@ export default function BikeForm({
           value={bikeYear}
           placeholder='Year'
           onChange={onYearChange}
+        />
+      </label>
+
+      <label>Bike image
+        <input
+          name='bike image'
+          type='file'
+          onChange={onBikeImageChange}
         />
       </label>
 
